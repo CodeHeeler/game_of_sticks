@@ -13,7 +13,7 @@ class Player:
     def __eq__(self, other):
         return self.name == other.name and self.moves == other.moves
 
-    def get_move(self):
+    def get_move(self, game):
         move = 0
         move = int(input("\nHow many sticks do you want to pick up, {}? (1-3)".format(self.name)))
         while move < 1 or move > 3:
