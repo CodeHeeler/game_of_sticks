@@ -62,5 +62,19 @@ def test_get_move():
 
 def test_user_turn():
     pass
-if __name__ == "__main__":
-    main()
+
+
+test_player_str()
+test_player_eq()
+test_player_not_eq()
+test_player_get_move()
+test_game_str()
+test_game_eq()
+test_game_not_eq()
+test_ai_str()
+test_ai_eq()
+test_ai__not__eq()
+test_ai_get_move()
+test_user_turn_sets_loser_to_true()
+test_get_move()
+test_user_turn()
