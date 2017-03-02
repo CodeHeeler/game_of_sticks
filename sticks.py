@@ -1,12 +1,96 @@
-from player import *
-from game import *
-from ai import AI
+from random import choice
 #import system.io
 
-def user_turn(name, game):
-    print("\nSticks remaining: {}".format(game.stick_num))
-    move = name.get_move(game)
-    game.stick_num -= move
+class Player:
+
+    def __init__(self, name, lose_bool=False):
+        self.name = name
+        self.lose_bool = lose_bool
+
+    def __str__(self):
+        return "Player name: {}".format(self.name)
+
+    def __eq__(self, other):
+        return self.name == other.name
+
+    def get_move(self, game, test_bool):
+        move = 0
+        if not test_bool:
+            move = int(input("\nHow many sticks do you want to pick up, {}? (1-3)".format(self.name)))
+            while move < 1 or move > 3:
+                print("That wasn't a valid choice, {}".format(self.name))
+                move = int(input("\nHow many sticks do you want to pick up, {}? (1-3)".format(self.name)))
+            self.moves_list.append(move)
+        return move
+
+class Game:
+    def __init__(self, stick_total, player1, player2="none"):
+        self.player1 = player1
+        self.player2 = player2
+        self.stick_total = stick_total
+        self.stick_num = stick_total
+
+    def __str__(self):
+        return "This game is between {} and {} with {} sticks.".format(self.player1, self.player2, self.stick_num)
+
+
+    def __eq__(self, other):
+        return (self.player1 == other.player1 and
+               self.player2 == other.player2 and
+               self.stick_num == other.stick_num)
+
+class AI:
+
+    def __init__(self, game):
+        self.name = "AI"
+        self.temp_moves_list = []
+        self.lose_bool = False
+        # self.all_poss_moves_dict = enumerate([[1,2,3]] * game.stick_num, 1)
+        self.all_poss_moves_dict = {x+1: [1,2,3] for x in range(game.stick_num)}
+
+
+    def __str__(self):
+        return "AI"
+
+    def __eq__(self, other):
+        return (self.name == other.name and
+        self.all_poss_moves_dict == other.all_poss_moves_dict)
+
+    def get_move(self, game, test_bool):
+        move = 0
+        if not test_bool:
+            if game.stick_num > len(self.all_poss_moves_dict):
+                for x in range(len(self.all_poss_moves_dict), game.stick_num + 4):
+                    self.all_poss_moves_dict[x]= [1,2,3]
+            move = choice(self.all_poss_moves_dict[game.stick_num])
+            self.temp_moves_list.append((game.stick_num,move))
+            print("The computer picked up {} sticks.".format(move))
+        return move
+
+    def save_moves(self):
+        for chunk in self.temp_moves_list:
+            self.all_poss_moves_dict[chunk[0]].append(chunk[1])
+            self.temp_moves_list = []
+
+
+        """dumb AI strategy"""
+
+        # if game.stick_num < 3:
+        #     move = choice([1,2])
+        #     self.temp_moves_list.append(move)
+        #     print("The computer picked up {} sticks.".format(move))
+        #     return move
+        # else:
+        #     move = 3
+        #     self.temp_moves_list.append(move)
+        #     print("The computer picked up {} sticks.".format(move))
+        #     return move
+
+def user_turn(name, game, test_bool):
+    if not test_bool:
+        print("\nSticks remaining: {}".format(game.stick_num))
+        move = name.get_move(game, False)
+        game.stick_num -= move
     if game.stick_num <= 0:
         name.lose_bool = True
 
@@ -91,7 +175,5 @@ def main():
                             break
                 else:
                     break
-            print("\n\nDid we learn anything: {}".format(ai.all_poss_moves_dict))
 
-
-main()
+#main()
